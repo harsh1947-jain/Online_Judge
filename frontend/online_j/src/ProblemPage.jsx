@@ -1,5 +1,6 @@
 
 
+
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -68,32 +69,82 @@ export default function ProblemPage() {
     setLoading(false);
   };
 
-  const handleSubmit = async () => {
-    setLoading(true);
-    setError("");
-    setOutput("");
+//   const handleSubmit = async () => {
+//     setLoading(true);
+//     setError("");
+//     setOutput("");
 
-    try {
-      const res = await fetch(`http://localhost:8000/submit/${encodeURIComponent(problem.title)}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          language: "cpp",
-          code,
-        }),
-      });
+//     try {
+//       const res = await fetch(`http://localhost:8000/submit/${encodeURIComponent(problem.title)}`, {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({
+//           language: "cpp",
+//           code,
+//         }),
+//       });
 
-      const data = await res.json();
+//       const data = await res.json();
 
-      if (res.ok) {
-        if (data.success) {
-          setOutput(data.message); // ✅ All test cases passed
-        } else {
-          // ❌ Show failed test cases in detail
-          const formatted = data.results.map((test, index) => {
-            return `Test Case ${index + 1}:
+//       if (res.ok) {
+//         if (data.success) {
+//           setOutput(data.message); // ✅ All test cases passed
+//         } else {
+//           // ❌ Show failed test cases in detail
+//           const formatted = data.results.map((test, index) => {
+//             return `Test Case ${index + 1}:
+// Input:
+// ${test.input}
+// Expected Output:
+// ${test.expected}
+// Your Output:
+// ${test.actual}
+// Result: ${test.passed ? "✅ Passed" : "❌ Failed"}\n`;
+//           }).join("\n");
+
+//           setOutput(`${data.message}\n\n${formatted}`);
+//         }
+//       } else {
+//         setError(data.error || "❌ Submission failed.");
+//       }
+//     } catch (err) {
+//       setError("❌ Server Error: " + err.message);
+//     }
+
+
+//     setLoading(false);
+
+   
+//   };
+
+
+const handleSubmit = async () => {
+  setLoading(true);
+  setError("");
+  setOutput("");
+
+  try {
+    const res = await fetch(`http://localhost:8000/submit/${encodeURIComponent(problem.title)}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        language: "cpp",
+        code,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      if (data.success) {
+        setOutput(data.message); // ✅ All test cases passed
+      } else {
+        const formatted = data.results.map((test, index) => {
+          return `Test Case ${index + 1}:
 Input:
 ${test.input}
 Expected Output:
@@ -101,19 +152,40 @@ ${test.expected}
 Your Output:
 ${test.actual}
 Result: ${test.passed ? "✅ Passed" : "❌ Failed"}\n`;
-          }).join("\n");
+        }).join("\n");
 
-          setOutput(`${data.message}\n\n${formatted}`);
-        }
-      } else {
-        setError(data.error || "❌ Submission failed.");
+        setOutput(`${data.message}\n\n${formatted}`);
       }
-    } catch (err) {
-      setError("❌ Server Error: " + err.message);
-    }
 
-    setLoading(false);
-  };
+
+      const user = JSON.parse(localStorage.getItem("user")); // 👈 Get the user object from localStorage
+const userId = user?._id; // or user.id based on your backend model
+
+await fetch("http://localhost:8000/submission", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    userId, // 👈 Include userId in the request
+    problemTitle: problem.title,
+    code,
+    language: "cpp",
+    verdict: data.verdict || (data.success ? "Accepted" : "Wrong Answer")
+  }),
+});
+
+
+    } else {
+      setError(data.error || "❌ Submission failed.");
+    }
+  } catch (err) {
+    setError("❌ Server Error: " + err.message);
+  }
+
+  setLoading(false);
+};
+
 
   if (!problem) {
     return (
@@ -200,3 +272,4 @@ Result: ${test.passed ? "✅ Passed" : "❌ Failed"}\n`;
     </div>
   );
 }
+

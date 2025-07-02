@@ -5,7 +5,8 @@ import LoginPage from "./LoginPage";
 import RegisterPage from "./RegisterPage";
 import ProblemListPage from "./ProblemListPage";
 import ProblemPage from "./ProblemPage";
-import MySubmissionsPage from "./Mysubmission";
+import MySubmissions from "./Mysubmission";
+
 
 function App() {
   return (
@@ -16,7 +17,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
          <Route path="/problemList" element={<ProblemListPage />} />
            <Route path="/problems/:id" element={<ProblemPage />} />
-              <Route path="/submissions" element={<MySubmissionsPage />} />
+              <Route path="/mysubmissions" element={<MySubmissions/>} />
       </Routes>
     </Router>
   );

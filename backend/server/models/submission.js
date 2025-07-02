@@ -1,24 +1,60 @@
+// const mongoose = require("mongoose");
+
+// const submissionSchema = new mongoose.Schema({
+//   problem: {
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: "Problem",
+//     required: true
+//   },
+//   code: {
+//     type: String,
+//     required: true
+//   },
+//   language: {
+//     type: String,
+//     required: true
+//   },
+//   verdict: {
+//     type: String,
+//     enum: ["Accepted", "Wrong Answer", "Compilation Error", "Runtime Error", "Time Limit Exceeded"],
+//     required: true
+//   },
+//   createdAt: {
+//     type: Date,
+//     default: Date.now
+//   }
+// });
+
+// module.exports = mongoose.model("Submission", submissionSchema);
+
 
 const mongoose = require("mongoose");
 
 const submissionSchema = new mongoose.Schema({
-  userId: {
+  user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "user",            // 👈 references User collection
+    ref: "User", // reference to the User model
     required: true
   },
-  code: String,
+  problem: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Problem",
+    required: true
+  },
+  code: {
+    type: String,
+    required: true
+  },
   language: {
     type: String,
-    enum: ["python", "cpp", "java"]
+    required: true
   },
-  status: {
+  verdict: {
     type: String,
-    enum: ["Pending", "Accepted", "Wrong Answer", "Error"],
-    default: "Pending"
+    enum: ["Accepted", "Wrong Answer", "Compilation Error", "Runtime Error", "Time Limit Exceeded"],
+    required: true
   },
-  score: Number,
-  submittedAt: {
+  createdAt: {
     type: Date,
     default: Date.now
   }
